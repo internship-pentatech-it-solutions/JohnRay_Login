@@ -1,10 +1,32 @@
 import "package:flutter/material.dart";
+import 'package:login/Pages/Index.dart';
 import "package:login/Pages/Register.dart";
 import "package:login/components/Button.dart";
 import 'package:login/components/inputFields.dart';
+import 'package:firebase_core/firebase_core.dart';
+//import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+
+//// THIS THE FIREBASE CODE FOR THE LOGIN
+  void LoggedIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _email.text, password: _password.text);
+    Navigator.push(
+        // REDIRECTS USER TO INDEXPAGE AFTER A SUCCESSFUL LOGIN
+        context,
+        MaterialPageRoute(builder: (context) => IndexPage()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +94,29 @@ class Login extends StatelessWidget {
                 ),
                 Expanded(
                     child: TextField(
+                  controller: _email,
                   decoration: InputDecoration(
-                    hintText: 'Email or Phone',
+                    hintText: 'Email',
                     //suffixIcon: Icon(widget.icon),
+                    filled: true,
+                    fillColor: Colors.grey,
+                    hintStyle:
+                        TextStyle(color: Color(0xfffffffff), fontSize: 18),
+                    border:
+                        OutlineInputBorder(borderSide: BorderSide(width: 3)),
+                  ),
+                )),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                    child: TextField(
+                  controller: _password,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    //suffixIcon: Icon(widget.icon),
+                    filled: true,
+                    fillColor: Colors.grey,
                     hintStyle:
                         TextStyle(color: Color(0xfffffffff), fontSize: 18),
                     border:
@@ -94,8 +136,7 @@ class Login extends StatelessWidget {
                     wid: width * 1,
                     text: 'Login',
                     tapped: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Register()));
+                      LoggedIn();
                     })
               ],
             ),
